@@ -1,5 +1,6 @@
 from flask import Flask
 from models.database import db
+import os
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -12,4 +13,4 @@ def hello_world():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=int(os.environ['PORT']))
