@@ -13,7 +13,7 @@ app.config['DEBUG'] = True
 @app.route('/', methods=['POST'])
 def hello_world():
     data = {}
-    data['speech'] = 'Hello World!'
+    data['displayText'] = 'Hello World!'
     json_data = json.dumps(data)
     return json_data
 
