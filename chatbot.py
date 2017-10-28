@@ -14,6 +14,7 @@ app.config['DEBUG'] = True
 def hello_world():
     data = {}
     data['displayText'] = 'Hello World!'
+    data['speech']= 'Hello Hi World'
     json_data = json.dumps(data)
     return json_data
 
