@@ -22,7 +22,11 @@ def hello_world():
     res={
         "speech": speech,
         "displayText": speech,
-        "data": {"facebook": "Hi Peter"},
+        "data": {"facebook": {
+            "text":{
+                "Hi Peter"
+            }
+        }},
         # "contextOut": [],
         "source": "Test"
     }
