@@ -23,9 +23,7 @@ def hello_world():
         "speech": speech,
         "displayText": speech,
         "data": {"facebook": {
-            "text":{
-                "Hi Peter"
-            }
+            "text":"Hi Peter"
         }},
         # "contextOut": [],
         "source": "Test"
@@ -37,4 +35,4 @@ def hello_world():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ['PORT']))
+    app.run()
