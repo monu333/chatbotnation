@@ -7,9 +7,13 @@ app.config['DEBUG'] = True
 #app.config['SQLALCHEMY_DATABASE_URI'] = 
 #db.init_app(app)
 
-@app.route('/')
+@app.route('/' methods=['POST'])
 def hello_world():
-    return 'Hello World!'
+    response=
+        {
+        speech:'Hello World!'
+    }
+    return response
 
 
 if __name__ == '__main__':
