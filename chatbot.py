@@ -1,12 +1,27 @@
 from flask import Flask
 from flask import make_response
 from flask import request
-from models.database import db
-import os
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import *
 import json
+import os
+
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://admin:admin123@chatbotnation.ccw2jw89y0nl.us-west-2.rds.amazonaws.com:3306/chatbot_nation"
+engine = create_engine('mysql+pymysql://admin:admin123@chatbotnation.ccw2jw89y0nl.us-west-2.rds.amazonaws.com:3306/chatbot_nation', convert_unicode=True)
+db_session = scoped_session(sessionmaker(autocommit=False,
+                                         autoflush=False,
+                                         bind=engine))
+Base = declarative_base()
+Base.query = db_session.query_property()
+metadata = MetaData(bind=engine)
+db = SQLAlchemy()
+db.init_app(app)
+
 
 
 # app.config['SQLALCHEMY_DATABASE_URI'] =
@@ -22,6 +37,9 @@ def hello_world():
     req = request.get_json(silent=True, force=True)
     speech = "Hi Peter, How are you?"
     speech2 = "Hi Natasha! Whats up?"
+
+
+
     if req.get("result").get("action") == "action_one":
         res = {
             "speech": speech,
@@ -43,6 +61,19 @@ def hello_world():
             # "contextOut": [],
             "source": "Test"
          }
+    elif req.get("result").get("action") == "check_name":
+        parameters= req.get("result").get("parameters")
+        name=parameters.get("given-name")
+        speech3=db_test(name)
+        res = {
+            "speech": speech3,
+            "displayText": speech3,
+            "data": {"facebook": {
+                "text": speech3
+            }},
+            # "contextOut": [],
+            "source": "Test"
+         }
     else:
         res={}
 
@@ -52,5 +83,23 @@ def hello_world():
     return r
 
 
+def db_test(name):
+    users = Table('user',metadata, autoload=True)
+    s = users.select()
+    rs = s.execute()
+    row = rs.fetchall()
+    print(row)
+
+    s1= users.select(users.c.first_name==name)
+    rs1= s1.execute()
+    row1= rs1.fetchall()
+    if row1!="":
+        return "Yes, User found in our system!"
+    else:
+        return "User not found!"
+    print("searched result:")
+    print(row1)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ['PORT']))
+#app.run()

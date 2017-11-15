@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Time, text
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-from models import session
 
 Base = declarative_base()
 metadata = Base.metadata
@@ -26,8 +25,6 @@ class User(Base):
     web_ex = Column(String(255))
     video_conf = Column(String(255))
 
-    def save(self):
-        session.sess.add()
 
 
 class UserChatRsp(Base):
