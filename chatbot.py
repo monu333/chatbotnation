@@ -66,8 +66,6 @@ def hello_world():
         name=parameters.get("given-name")
         speech3=db_test(name)
         res = {
-            "speech": speech3,
-            "displayText": speech3,
             "data": {"facebook": {
                 "text": speech3
             }},
