@@ -83,14 +83,16 @@ def hello_world():
 
 def db_test(name):
     users = Table('user',metadata, autoload=True)
-    s = users.select()
-    rs = s.execute()
-    row = rs.fetchall()
-    print(row)
-
+    #s = users.select()
+    #rs = s.execute()
+    #row = rs.fetchall()
+    #print(row)
+    print(name)
     s1= users.select(users.c.first_name==name)
     rs1= s1.execute()
+    print(rs1)
     row1= rs1.fetchall()
+    print(row1)
     if row1!="":
         return "Yes, User found in our system!"
     else:
