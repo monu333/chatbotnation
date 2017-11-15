@@ -66,6 +66,8 @@ def hello_world():
         name=parameters.get("given-name")
         speech3=db_test(name)
         res = {
+            "speech": speech3,
+            "displayText": speech3,
             "data": {"facebook": {
                 "text": speech3
             }},
@@ -83,16 +85,14 @@ def hello_world():
 
 def db_test(name):
     users = Table('user',metadata, autoload=True)
-    #s = users.select()
-    #rs = s.execute()
-    #row = rs.fetchall()
-    #print(row)
-    print(name)
+    s = users.select()
+    rs = s.execute()
+    row = rs.fetchall()
+    print(row)
+
     s1= users.select(users.c.first_name==name)
     rs1= s1.execute()
-    print(rs1)
     row1= rs1.fetchall()
-    print(row1)
     if row1!="":
         return "Yes, User found in our system!"
     else:
