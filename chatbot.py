@@ -38,7 +38,9 @@ def hello_world():
     speech = "Hi Peter, How are you?"
     speech2 = "Hi Natasha! Whats up?"
     print("Just inside hello world:")
-    print("Input Json:"+req)
+    print("Input Json:")
+    print 
+    json.dumps(req, indent=4, sort_keys=True)
 
 
     if req.get("result").get("action") == "action_one":
