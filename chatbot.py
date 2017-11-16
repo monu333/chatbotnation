@@ -37,7 +37,8 @@ def hello_world():
     req = request.get_json(silent=True, force=True)
     speech = "Hi Peter, How are you?"
     speech2 = "Hi Natasha! Whats up?"
-
+    print("Just inside hello world:")
+    print("Input Json:"+req)
 
 
     if req.get("result").get("action") == "action_one":
@@ -64,6 +65,7 @@ def hello_world():
     elif req.get("result").get("action") == "check_name":
         parameters= req.get("result").get("parameters")
         name=parameters.get("given-name")
+
         speech3=db_test(name)
         res = {
             "speech": speech3,
