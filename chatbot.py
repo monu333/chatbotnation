@@ -5,10 +5,12 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import *
-import logger
+import logging
 import json
 import os
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -39,17 +41,31 @@ def chatbot_facade():
     if req.get("result").get("action") == "check_nick_name":
         parameters= req.get("result").get("parameters")
         name=parameters.get("given-name")
-
-        speech3=verify_nick_name(name)
+        print(name)
+        speech=verify_nick_name(name)
         res = {
-            "speech": speech3,
-            "displayText": speech3,
+            "speech": speech,
+            "displayText": speech,
             "data": {"facebook": {
-                "text": speech3
+                "text": speech
             }},
             # "contextOut": [],
             "source": "Test"
          }
+    elif req.get("result").get("action") == "check_email":
+        parameters = req.get("result").get("parameters")
+        email = parameters.get("email")
+        print(email)
+        speech = verify_email_id(email)
+        res = {
+            "speech": speech,
+            "displayText": speech,
+            "data": {"facebook": {
+                "text": speech
+            }},
+            # "contextOut": [],
+            "source": "Test"
+        }
     else:
         res={}
 
@@ -61,30 +77,31 @@ def chatbot_facade():
 
 
 def verify_nick_name(name):
-    logger.info("Entry:Verify Nick Name")
+    logger.info("Entry:Verify Nick Name:")
     user_frnd_list = Table('user_frnd_list',metadata, autoload=True)
     s = user_frnd_list.select(user_frnd_list.c.nick_name==name)
     rs = s.execute()
     row= rs.fetchall()
     logger.info("Exit:Verify Nick Name")
-    if row!="":
+    if len(row):
         return "Yes, User found in our system!"
     else:
         return "User not found!"
 
 
 def verify_email_id(email):
-    logger.info("Entry:Verify Email Id")
+    logger.info("Entry:Verify Email Id:")
     users = Table('user',metadata, autoload=True)
     s = users.select(users.c.email_id==email)
     rs = s.execute()
     row= rs.fetchall()
+    print(row)
     logger.info("Exit:Verify Email Id")
-    if row!="":
+    if len(row):
         return "Would you like to add this email id to your Friend List?"
     else:
         return "User not found!"
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ['PORT']))
-#app.run()
+    #app.run(host='0.0.0.0', port=int(os.environ['PORT']))
+    app.run()
