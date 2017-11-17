@@ -63,6 +63,7 @@ class UserFrndList(Base):
     created_date = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
     updated_date = Column(DateTime)
     active_flag = Column(Integer)
+
     frnd_usr = relationship('User', primaryjoin='UserFrndList.frnd_usr_id == User.usr_id')
     usr = relationship('User', primaryjoin='UserFrndList.usr_id == User.usr_id')
 

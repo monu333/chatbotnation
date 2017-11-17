@@ -64,11 +64,11 @@ def hello_world():
             # "contextOut": [],
             "source": "Test"
          }
-    elif req.get("result").get("action") == "check_nick_name":
+    elif req.get("result").get("action") == "check_name":
         parameters= req.get("result").get("parameters")
         name=parameters.get("given-name")
 
-        speech3=verify_nick_name(name)
+        speech3=db_test(name)
         res = {
             "speech": speech3,
             "displayText": speech3,
@@ -87,17 +87,22 @@ def hello_world():
     return r
 
 
-def verify_nick_name(name):
-    user_frnd_list = Table('user_frnd_list',metadata, autoload=True)
-    s = user_frnd_list.select(user_frnd_list.c.first_name==name)
+def db_test(name):
+    users = Table('user',metadata, autoload=True)
+    s = users.select()
     rs = s.execute()
-    row= rs.fetchall()
-    if row!="":
+    row = rs.fetchall()
+    print(row)
+
+    s1= users.select(users.c.first_name==name)
+    rs1= s1.execute()
+    row1= rs1.fetchall()
+    if row1!="":
         return "Yes, User found in our system!"
     else:
         return "User not found!"
     print("searched result:")
-    print(row)
+    print(row1)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ['PORT']))
