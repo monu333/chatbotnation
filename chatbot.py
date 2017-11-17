@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import *
+import logger
 import json
 import os
 
@@ -28,47 +29,18 @@ db.init_app(app)
 # db.init_app(app)
 
 @app.route('/', methods=['POST'])
-def hello_world():
-    #data = {}
-    #data['displayText'] = 'Hello World!'
-    #data['speech']= 'Hello Hi World'
-    #json_data = json.dumps(data)
-    #return json_data
+def chatbot_facade():
     req = request.get_json(silent=True, force=True)
-    speech = "Hi Peter, How are you?"
-    speech2 = "Hi Natasha! Whats up?"
-    print("Just inside hello world:")
+
+    logger.info("Entry:Chatbot Facade")
     print("Input Json:")
     print(json.dumps(req, indent=4, sort_keys=True))
 
-
-
-    if req.get("result").get("action") == "action_one":
-        res = {
-            "speech": speech,
-            "displayText": speech,
-            "data": {"facebook": {
-                "text": "Hi Peter"
-            }},
-            # "contextOut": [],
-            "source": "Test"
-        }
-
-    elif req.get("result").get("action") == "action_two":
-        res = {
-            "speech": speech2,
-            "displayText": speech2,
-            "data": {"facebook": {
-                "text": "Hi Natasha!"
-            }},
-            # "contextOut": [],
-            "source": "Test"
-         }
-    elif req.get("result").get("action") == "check_name":
+    if req.get("result").get("action") == "check_nick_name":
         parameters= req.get("result").get("parameters")
         name=parameters.get("given-name")
 
-        speech3=db_test(name)
+        speech3=verify_nick_name(name)
         res = {
             "speech": speech3,
             "displayText": speech3,
@@ -84,25 +56,34 @@ def hello_world():
     res = json.dumps(res, indent=4)
     r = make_response(res)
     r.headers['Content-Type'] = 'application/json'
+    logger.info("Exit:Chatbot Facade")
     return r
 
 
-def db_test(name):
-    users = Table('user',metadata, autoload=True)
-    s = users.select()
+def verify_nick_name(name):
+    logger.info("Entry:Verify Nick Name")
+    user_frnd_list = Table('user_frnd_list',metadata, autoload=True)
+    s = user_frnd_list.select(user_frnd_list.c.nick_name==name)
     rs = s.execute()
-    row = rs.fetchall()
-    print(row)
-
-    s1= users.select(users.c.first_name==name)
-    rs1= s1.execute()
-    row1= rs1.fetchall()
-    if row1!="":
+    row= rs.fetchall()
+    logger.info("Exit:Verify Nick Name")
+    if row!="":
         return "Yes, User found in our system!"
     else:
         return "User not found!"
-    print("searched result:")
-    print(row1)
+
+
+def verify_email_id(email):
+    logger.info("Entry:Verify Email Id")
+    users = Table('user',metadata, autoload=True)
+    s = users.select(users.c.email_id==email)
+    rs = s.execute()
+    row= rs.fetchall()
+    logger.info("Exit:Verify Email Id")
+    if row!="":
+        return "Would you like to add this email id to your Friend List?"
+    else:
+        return "User not found!"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ['PORT']))
