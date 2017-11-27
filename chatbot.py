@@ -88,7 +88,7 @@ def verify_nick_name(name):
     else:
         return "User not found!"
 
-
+#--------------------------
 def verify_email_id(email):
     logger.info("Entry:Verify Email Id:")
     users = Table('user',metadata, autoload=True)
